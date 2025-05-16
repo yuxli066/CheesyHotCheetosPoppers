@@ -77,6 +77,7 @@ struct DateView: View {
 struct BackgroundView: View {
     
     // this means this variable is bound, mem referenced from outside of this struct.
+    // not needed here, but good to have for TWO WAY DATA BINDING
     @Binding var isNight: Bool;
     
     var body: some View {
