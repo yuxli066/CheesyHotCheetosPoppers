@@ -8,13 +8,17 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    // using state decorator here so this struct holds value
+    @State private var isNight:Bool = false;
+    
     var body: some View {
         ZStack {
-            BackgroundView(topColor: Color.blue, bottomColor:Color(.lightBlue))
+            BackgroundView(isNight: $isNight)
             VStack {
                 CityTextView(CityName: "Leos City, CA")
                 MainWeatherView(
-                    iconString: "cloud.sun.fill",
+                    iconString: isNight ? "moon.stars.fill" : "cloud.sun.fill",
                     temp: 80
                 )
                 
@@ -28,7 +32,7 @@ struct ContentView: View {
                 Spacer()
                 
                 Button {
-                    print("hi")
+                    isNight.toggle()
                 } label: {
                     WeatherButton(
                         text: "Change Date Time",
@@ -71,13 +75,16 @@ struct DateView: View {
 }
 
 struct BackgroundView: View {
-    var topColor: Color
-    var bottomColor: Color
+    
+    // this means this variable is bound, mem referenced from outside of this struct.
+    @Binding var isNight: Bool;
     
     var body: some View {
-        LinearGradient(gradient: Gradient(colors: [topColor, bottomColor]),
-                       startPoint: .topLeading,
-                       endPoint: .bottomTrailing)
+        
+        let gradientColor: Gradient = isNight ? Gradient(colors: [Color.black, Color.gray]) :
+            Gradient(colors: [Color.blue, Color(.lightBlue)])
+        
+        LinearGradient(gradient: gradientColor, startPoint: .topLeading, endPoint: .bottomTrailing)
         .edgesIgnoringSafeArea(.all)
     }
 }
@@ -89,21 +96,6 @@ struct CityTextView: View {
             .font(.system(size: 32, weight: .medium, design: .default))
             .foregroundColor(.white)
             .padding()
-    }
-}
-
-struct WeatherButton: View {
-    var text: String
-    var foregroundColor: Color
-    var backgroundColor: Color
-    
-    var body: some View {
-        Text("\(text)")
-            .frame(width: 280, height: 50)
-            .foregroundColor(foregroundColor)
-            .background(backgroundColor)
-            .font(.system(size: 20, weight: .bold))
-            .cornerRadius(10)
     }
 }
 
